@@ -1,0 +1,1 @@
+{"version":3,"file":"jNotify.d.ts","sourceRoot":"","sources":["../../../src/jCore/jNotify/jNotify.ts"],"names":[],"mappings":"AA8EA,MAAM,WAAW,mBAAmB;IAChC,KAAK,EAAE,MAAM,CAAC;IACd,OAAO,EAAE,MAAM,CAAC;IAChB,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,eAAe,CAAC,EAAE,MAAM,IAAI,CAAC;CAChC;AAED;;GAEG;AACH,wBAAgB,OAAO,CAAC,OAAO,EAAE,mBAAmB,QAyBnD"}

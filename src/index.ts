@@ -1,47 +1,54 @@
-import { jNotify } from './util/jNotify'
-import { jSysTray } from './util/jSysTray'
+import { jCore } from "./jCore";
 
-console.log('Notifier starting...')
+console.log("Application starting...");
+
+// Initialize URL handler
+jCore.urlHandler.init("node-app-boilerplate");
+
+// Register action handlers
+jCore.urlHandler.addAction("console_log", (msg: string) => {
+    console.log("URL received:", msg);
+});
 
 /**
  * Send notification
  */
-function sendNotification() {
-	const time = new Date().toLocaleTimeString()
+function sendTimestampNotification() {
+    const time = new Date().toLocaleTimeString();
 
-	jNotify({
-		title: 'Node Notifier Test',
-		message: `Heartbeat @ ${time}`,
-		clickUrl: 'https://www.google.com',
-	})
+    jCore.notify({
+        title: "Node Notifier Test",
+        message: `Heartbeat @ ${time}`,
+        clickUrl: "https://www.google.com",
+    });
 }
 
 // Initialize the system tray
-jSysTray.init({
-	title: 'Node Notifier',
-	tooltip: 'Node Notifier Running',
-	items: [
-		{
-			title: 'Send Notification Now',
-			tooltip: 'Trigger a heartbeat',
-			onclick: sendNotification,
-		},
-		{
-			title: 'Exit',
-			tooltip: 'Quit application',
-			onclick: () => {
-				console.log('Exiting via tray...')
-				process.exit(0)
-			},
-		},
-	],
-})
+jCore.sysTray.init({
+    title: "Node Notifier",
+    tooltip: "Node Notifier Running",
+    items: [
+        {
+            title: "Send Notification Now",
+            tooltip: "Trigger a heartbeat",
+            onclick: sendTimestampNotification,
+        },
+        {
+            title: "Exit",
+            tooltip: "Quit application",
+            onclick: () => {
+                console.log("Exiting via tray...");
+                process.exit(0);
+            },
+        },
+    ],
+});
 
 // Fire immediately
-sendNotification()
+sendTimestampNotification();
 
 // Repeat every minute
-setInterval(sendNotification, 60 * 1000)
+setInterval(sendTimestampNotification, 60 * 1000);
 
 // Keep process alive
-process.stdin.resume()
+process.stdin.resume();

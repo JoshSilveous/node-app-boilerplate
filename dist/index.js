@@ -1,43 +1,48 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const jNotify_1 = require("./util/jNotify");
-const jSysTray_1 = require("./util/jSysTray");
-console.log('Notifier starting...');
+const jCore_1 = require("./jCore");
+console.log("Application starting...");
+// Initialize URL handler
+jCore_1.jCore.urlHandler.init("node-app-boilerplate");
+// Register action handlers
+jCore_1.jCore.urlHandler.addAction("console_log", (msg) => {
+    console.log("URL received:", msg);
+});
 /**
  * Send notification
  */
-function sendNotification() {
+function sendTimestampNotification() {
     const time = new Date().toLocaleTimeString();
-    (0, jNotify_1.jNotify)({
-        title: 'Node Notifier Test',
+    jCore_1.jCore.notify({
+        title: "Node Notifier Test",
         message: `Heartbeat @ ${time}`,
-        clickUrl: 'https://www.google.com',
+        clickUrl: "https://www.google.com",
     });
 }
 // Initialize the system tray
-jSysTray_1.jSysTray.init({
-    title: 'Node Notifier',
-    tooltip: 'Node Notifier Running',
+jCore_1.jCore.sysTray.init({
+    title: "Node Notifier",
+    tooltip: "Node Notifier Running",
     items: [
         {
-            title: 'Send Notification Now',
-            tooltip: 'Trigger a heartbeat',
-            onclick: sendNotification,
+            title: "Send Notification Now",
+            tooltip: "Trigger a heartbeat",
+            onclick: sendTimestampNotification,
         },
         {
-            title: 'Exit',
-            tooltip: 'Quit application',
+            title: "Exit",
+            tooltip: "Quit application",
             onclick: () => {
-                console.log('Exiting via tray...');
+                console.log("Exiting via tray...");
                 process.exit(0);
             },
         },
     ],
 });
 // Fire immediately
-sendNotification();
+sendTimestampNotification();
 // Repeat every minute
-setInterval(sendNotification, 60 * 1000);
+setInterval(sendTimestampNotification, 60 * 1000);
 // Keep process alive
 process.stdin.resume();
 //# sourceMappingURL=index.js.map
