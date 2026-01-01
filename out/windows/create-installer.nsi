@@ -15,10 +15,10 @@ Section "Install"
   File "${EXENAME}"
 
   SetOutPath "$INSTDIR\notifier-executables"
-  File /r "..\notifier-executables\*"
+  File /r "notifier-executables\*"
 
   SetOutPath "$INSTDIR\media"
-  File /r "..\media\*"
+  File /r "media\*"
 
   ; Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
