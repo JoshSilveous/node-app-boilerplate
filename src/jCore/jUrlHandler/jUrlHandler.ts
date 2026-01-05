@@ -139,14 +139,32 @@ async function init(protocolName: string) {
 
     // Register the protocol handler in Windows registry
     if (process.platform === "win32") {
-        const exePath = process.execPath.replace(/\\/g, "\\\\");
         const protocolKey = protocol.toLowerCase();
+
+        // In development, use the forwarder script. In production, use the exe
+        const isDev =
+            process.execPath.includes("node.exe") ||
+            process.execPath.includes("node");
+        let command: string;
+
+        if (isDev) {
+            // Development: Use the protocol forwarder script
+            const forwarderPath = path
+                .join(process.cwd(), "protocol-forwarder.js")
+                .replace(/\\/g, "\\\\");
+            const nodePath = process.execPath.replace(/\\/g, "\\\\");
+            command = `\\"${nodePath}\\" \\"${forwarderPath}\\" \\"%1\\"`;
+        } else {
+            // Production: Use the compiled executable
+            const exePath = process.execPath.replace(/\\/g, "\\\\");
+            command = `\\"${exePath}\\" \\"%1\\"`;
+        }
 
         // Create registry entries to handle the custom protocol
         const regCommands = [
             `reg add "HKCU\\Software\\Classes\\${protocolKey}" /ve /d "URL:${protocol} Protocol" /f`,
             `reg add "HKCU\\Software\\Classes\\${protocolKey}" /v "URL Protocol" /t REG_SZ /d "" /f`,
-            `reg add "HKCU\\Software\\Classes\\${protocolKey}\\shell\\open\\command" /ve /d "\\"${exePath}\\" \\"%1\\"" /f`,
+            `reg add "HKCU\\Software\\Classes\\${protocolKey}\\shell\\open\\command" /ve /d "${command}" /f`,
         ].join(" && ");
 
         exec(regCommands, (error, stdout, stderr) => {
