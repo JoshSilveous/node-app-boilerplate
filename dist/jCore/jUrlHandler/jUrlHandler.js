@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.jUrlHandler = void 0;
 const child_process_1 = require("child_process");
+const path_1 = __importDefault(require("path"));
 const net_1 = __importDefault(require("net"));
 const SINGLE_INSTANCE_PORT = 34567; // Port for single-instance communication
 let protocol = "";
@@ -121,13 +122,29 @@ async function init(protocolName) {
     startSingleInstanceServer();
     // Register the protocol handler in Windows registry
     if (process.platform === "win32") {
-        const exePath = process.execPath.replace(/\\/g, "\\\\");
         const protocolKey = protocol.toLowerCase();
+        // In development, use the forwarder script. In production, use the exe
+        const isDev = process.execPath.includes("node.exe") ||
+            process.execPath.includes("node");
+        let command;
+        if (isDev) {
+            // Development: Use the protocol forwarder script
+            const forwarderPath = path_1.default
+                .join(process.cwd(), "protocol-forwarder.js")
+                .replace(/\\/g, "\\\\");
+            const nodePath = process.execPath.replace(/\\/g, "\\\\");
+            command = `\\"${nodePath}\\" \\"${forwarderPath}\\" \\"%1\\"`;
+        }
+        else {
+            // Production: Use the compiled executable
+            const exePath = process.execPath.replace(/\\/g, "\\\\");
+            command = `\\"${exePath}\\" \\"%1\\"`;
+        }
         // Create registry entries to handle the custom protocol
         const regCommands = [
             `reg add "HKCU\\Software\\Classes\\${protocolKey}" /ve /d "URL:${protocol} Protocol" /f`,
             `reg add "HKCU\\Software\\Classes\\${protocolKey}" /v "URL Protocol" /t REG_SZ /d "" /f`,
-            `reg add "HKCU\\Software\\Classes\\${protocolKey}\\shell\\open\\command" /ve /d "\\"${exePath}\\" \\"%1\\"" /f`,
+            `reg add "HKCU\\Software\\Classes\\${protocolKey}\\shell\\open\\command" /ve /d "${command}" /f`,
         ].join(" && ");
         (0, child_process_1.exec)(regCommands, (error, stdout, stderr) => {
             if (error) {

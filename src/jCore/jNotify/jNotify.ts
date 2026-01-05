@@ -95,6 +95,7 @@ export function jNotify(options: NotificationOptions) {
             message: options.message,
             icon: getIconPath(),
             wait: true,
+            appID: "com.joshsilveous.nodeappboilerplate",
         },
         (err: Error | null, response: string) => {
             if (err) {

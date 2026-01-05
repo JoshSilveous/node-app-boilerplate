@@ -76,6 +76,7 @@ function jNotify(options) {
         message: options.message,
         icon: getIconPath(),
         wait: true,
+        appID: "com.joshsilveous.nodeappboilerplate",
     }, (err, response) => {
         if (err) {
             console.error("Notification error:", err);
