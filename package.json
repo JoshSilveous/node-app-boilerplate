@@ -7,7 +7,7 @@
         "build": "node -e \"const fs=require('fs'); fs.rmSync('dist',{recursive:true,force:true});\" && tsc && node -e \"const fs=require('fs'); fs.cpSync('media','dist/media',{recursive:true}); fs.cpSync('notifier-executables','dist/notifier-executables',{recursive:true});\"",
         "dev": "tsc --watch",
         "start": "node dist/index.js",
-        "package": "npm run build && node -e \"const fs=require('fs'); fs.rmSync('out/windows/media',{recursive:true,force:true}); fs.rmSync('out/windows/notifier-executables',{recursive:true,force:true}); fs.cpSync('media','out/windows/media',{recursive:true}); fs.cpSync('notifier-executables','out/windows/notifier-executables',{recursive:true});\" && pkg dist/index.js -t node18-win-x64 -o out/windows/node-app-boilerplate.exe && node node_modules/rcedit/lib/rcedit.js out/windows/node-app-boilerplate.exe --set-icon media/icon.ico",
+        "package": "npm run build && node -e \"const fs=require('fs'); fs.rmSync('out/windows/media',{recursive:true,force:true}); fs.rmSync('out/windows/notifier-executables',{recursive:true,force:true}); fs.cpSync('media','out/windows/media',{recursive:true}); fs.cpSync('notifier-executables','out/windows/notifier-executables',{recursive:true});\" && pkg dist/index.js -t node18-win-x64 -o out/windows/node-app-boilerplate.exe && npx resedit --in out/windows/node-app-boilerplate.exe --out out/windows/node-app-boilerplate.exe --delete-allicon --icon media/icon.ico --overwrite --verbose",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "pkg": {
@@ -27,7 +27,7 @@
         "@types/node": "^25.0.3",
         "@types/node-notifier": "^8.0.5",
         "pkg": "^5.8.1",
-        "rcedit": "^4.0.1",
+        "resedit-cli": "^3.0.1",
         "typescript": "^5.9.3"
     }
 }
