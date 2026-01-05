@@ -52,8 +52,21 @@ Page instfiles
 
 Section "Install"
   SetRegView 64
-  SetOutPath "$INSTDIR"
   SetShellVarContext all
+
+  ; Check if app is already running and kill it
+  nsExec::ExecToStack 'tasklist /FI "IMAGENAME eq \${EXENAME}" | find /I "\${EXENAME}"'
+  Pop $0
+  Pop $1
+
+  StrCmp $1 "" appNotRunning
+
+  nsExec::Exec 'taskkill /IM "\${EXENAME}" /T /F'
+  Sleep 1500
+
+  appNotRunning:
+
+  SetOutPath "$INSTDIR"
   File "out\\windows\\\${EXENAME}"
 
   SetOutPath "$INSTDIR\\notifier-executables"
